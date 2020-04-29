@@ -12,8 +12,9 @@ with orders as (
 payments as (
     select
         "orderID" as order_id,
-        AMOUNT/100 as amount
+        sum(AMOUNT)/100 as amount
     from raw.stripe.payment
+    group by 1
 ),
 final as (
     select

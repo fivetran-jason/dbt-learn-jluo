@@ -11,7 +11,11 @@ orders as (
     select * from {{ ref('stg_orders') }}
 ),
 orders_amount as (
-    select * from {{ ref('orders') }}
+    select 
+        customer_id,
+        sum(amount) as lifetime_value 
+    from {{ ref('orders') }}
+    group by 1
 ),
 customer_orders as (
     select
@@ -30,7 +34,7 @@ final as (
         customer_orders.first_order_date,
         customer_orders.most_recent_order_date,
         coalesce(customer_orders.number_of_orders, 0) as number_of_orders,
-        sum(orders_amount.amount) over (partition by customers.customer_id) as lifetime_value
+        coalesce(orders_amount.lifetime_value, 0) as lifetime_value
     from customers
     left join customer_orders using (customer_id)
     left join orders_amount using (customer_id)
