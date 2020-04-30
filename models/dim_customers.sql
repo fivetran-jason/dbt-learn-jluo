@@ -14,7 +14,7 @@ orders_amount as (
     select 
         customer_id,
         sum(amount) as lifetime_value 
-    from {{ ref('orders') }}
+    from {{ ref('fct_orders') }}
     group by 1
 ),
 customer_orders as (

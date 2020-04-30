@@ -13,7 +13,7 @@ payments as (
     select
         "orderID" as order_id,
         sum(AMOUNT)/100 as amount
-    from raw.stripe.payment
+    from {{ source('stripe', 'payment') }}
     group by 1
 ),
 final as (
